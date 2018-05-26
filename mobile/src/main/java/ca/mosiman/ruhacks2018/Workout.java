@@ -17,11 +17,16 @@ import org.w3c.dom.Text;
 public class Workout extends AppCompatActivity implements SensorEventListener{
     public int numberSteps = 0;
     TextView tv_numSteps;
+    TextView tv_runningAvgSteps;
     SensorManager sensorManager;
+
+    final int TIME_WINDOW = 10;
+    int runningTotalSteps = 0;
+    float runningAvgSteps = 0;
 
     // stuff for handlers
     Handler h = new Handler();
-    int delay = 10*1000; //1 second=1000 milisecond, 15*1000=15seconds
+    int delay = TIME_WINDOW*1000; //1 second=1000 milisecond, 15*1000=15seconds
     Runnable runnable;
 
 
@@ -43,6 +48,10 @@ public class Workout extends AppCompatActivity implements SensorEventListener{
         tv_numSteps = findViewById(R.id.txtNumSteps);
         tv_numSteps.setText(Integer.toString(numberSteps));
 
+        // get the TextView corresponding to runningAvgSteps
+        tv_runningAvgSteps = findViewById(R.id.txtRunningAvgSteps);
+        tv_runningAvgSteps.setText(Float.toString(runningAvgSteps));
+
         // Start a sensormanager
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -51,6 +60,7 @@ public class Workout extends AppCompatActivity implements SensorEventListener{
     @Override
     public void onSensorChanged(SensorEvent event) {
         numberSteps += event.values[0];
+        runningTotalSteps += event.values[0];
         tv_numSteps.setText(Integer.toString(numberSteps));
 
 
@@ -69,6 +79,11 @@ public class Workout extends AppCompatActivity implements SensorEventListener{
             public void run() {
                 //do something
                 Toast.makeText(Workout.this, "beep boop", Toast.LENGTH_SHORT).show();
+
+                runningAvgSteps = (runningTotalSteps/TIME_WINDOW)*12;
+                tv_runningAvgSteps.setText(Float.toString(runningAvgSteps));
+                runningTotalSteps = 0;
+
                 runnable=this;
 
                 h.postDelayed(runnable, delay);

@@ -17,10 +17,10 @@
         app:boxedEdges="all">
 
         <TextView
-            android:id="@+id/text"
+            android:id="@+id/dispHeartRate"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/hello_world" />
+            android:layout_height="59dp"
+            android:text="Heart rate:" />
 
     </FrameLayout>
 </android.support.wear.widget.BoxInsetLayout>

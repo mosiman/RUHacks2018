@@ -6,9 +6,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -16,6 +18,13 @@ public class Workout extends AppCompatActivity implements SensorEventListener{
     public int numberSteps = 0;
     TextView tv_numSteps;
     SensorManager sensorManager;
+
+    // stuff for handlers
+    Handler h = new Handler();
+    int delay = 10*1000; //1 second=1000 milisecond, 15*1000=15seconds
+    Runnable runnable;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +64,21 @@ public class Workout extends AppCompatActivity implements SensorEventListener{
         super.onResume();
         Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         sensorManager.registerListener(this,stepSensor,SensorManager.SENSOR_DELAY_UI);
+
+        h.postDelayed(new Runnable() {
+            public void run() {
+                //do something
+                Toast.makeText(Workout.this, "beep boop", Toast.LENGTH_SHORT).show();
+                runnable=this;
+
+                h.postDelayed(runnable, delay);
+            }
+        }, delay);
     }
 
     protected void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
+        h.removeCallbacks(runnable); //stop handler when activity not visible
     }
 }

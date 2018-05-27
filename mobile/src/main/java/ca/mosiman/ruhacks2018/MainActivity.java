@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.wearable.MessageClient;
 import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Wearable;
 
 import java.util.List;
 
@@ -79,5 +80,17 @@ public class MainActivity extends AppCompatActivity implements
         String message = new String(messageEvent.getData());
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         Log.v(TAG, "Main activity received message: " + message);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Wearable.getMessageClient(this).addListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Wearable.getMessageClient(this).removeListener(this);
     }
 }

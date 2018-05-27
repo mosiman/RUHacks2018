@@ -27,9 +27,12 @@ import java.util.concurrent.ExecutionException;
 public class MainActivity extends WearableActivity implements SensorEventListener,
         MessageClient.OnMessageReceivedListener{
 
-    //private TextView tv_heartRate;
+    Integer stepsTaken = 0;
+    TextView tv_heartRate;
+    TextView tv_numSteps;
     Button btn_sendMessage;
     SensorManager sensorManager;
+    Integer currentHeartRate = -1; // sentinel value
 
     private final static String TAG = "Wear MainActivity";
     int num = 1;
@@ -40,10 +43,12 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //tv_heartRate = (TextView) findViewById(R.id.dispHeartRate);
+        tv_heartRate = (TextView) findViewById(R.id.heartRate);
         btn_sendMessage = (Button) findViewById(R.id.btnSendMessage);
+        tv_numSteps = (TextView) findViewById(R.id.numSteps);
         String message = "heartu ratuh:";
-        //tv_heartRate.setText(message);
+        tv_heartRate.setText(message);
+        tv_numSteps.setText(stepsTaken.toString());
 
         // Enables Always-on
         setAmbientEnabled();
@@ -67,7 +72,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         Sensor heartSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
         sensorManager.registerListener(this,heartSensor,SensorManager.SENSOR_DELAY_NORMAL);
         Wearable.getMessageClient(this).addListener(this);
-
     }
 
     protected void onPause() {
@@ -80,6 +84,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
             String msg = "" + (int)event.values[0];
+            currentHeartRate = (int)event.values[0];
             //tv_heartRate.setText(msg);
             // send the message to phone when sensor changed
         }

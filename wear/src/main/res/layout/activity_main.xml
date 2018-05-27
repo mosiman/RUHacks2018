@@ -10,18 +10,17 @@
     tools:context="ca.mosiman.ruhacks2018.MainActivity"
     tools:deviceIds="wear">
 
-    <FrameLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/inner_frame_layout_padding"
-        app:boxedEdges="all">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/dispHeartRate"
-            android:layout_width="wrap_content"
-            android:layout_height="59dp"
-            android:text="Heart rate:" />
-
-    </FrameLayout>
+        <Button
+            android:id="@+id/btnSendMessage"
+            android:layout_width="111dp"
+            android:layout_height="50dp"
+            android:text="Button"
+            tools:layout_editor_absoluteX="22dp"
+            tools:layout_editor_absoluteY="10dp" />
+    </android.support.constraint.ConstraintLayout>
 </android.support.wear.widget.BoxInsetLayout>
 

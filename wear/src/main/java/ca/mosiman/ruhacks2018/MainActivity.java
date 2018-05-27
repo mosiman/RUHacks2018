@@ -1,6 +1,7 @@
 package ca.mosiman.ruhacks2018;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -8,7 +9,9 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.wearable.activity.WearableActivity;
+import android.support.wearable.view.drawer.WearableNavigationDrawer;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,10 +28,10 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends WearableActivity implements SensorEventListener,
-        MessageClient.OnMessageReceivedListener{
+        MessageClient.OnMessageReceivedListener,MenuItem.OnMenuItemClickListener {
 
     Integer stepsTaken = 0;
-    TextView tv_heartRate;
+    TextView tv_currHeartRate;
     TextView tv_numSteps;
     Button btn_sendMessage;
     SensorManager sensorManager;
@@ -43,28 +46,28 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tv_heartRate = (TextView) findViewById(R.id.heartRate);
-        btn_sendMessage = (Button) findViewById(R.id.btnSendMessage);
-        tv_numSteps = (TextView) findViewById(R.id.numSteps);
+        tv_currHeartRate = (TextView) findViewById(R.id.tvCurrentHR);
+        //btn_sendMessage = (Button) findViewById(R.id.btnSendMessage);
+        //tv_numSteps = (TextView) findViewById(R.id.numSteps);
         String message = "heartu ratuh:";
-        tv_heartRate.setText(message);
-        tv_numSteps.setText(stepsTaken.toString());
+        tv_currHeartRate.setText(currentHeartRate.toString());
+        //tv_numSteps.setText(stepsTaken.toString());
 
         // Enables Always-on
         setAmbientEnabled();
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-        btn_sendMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String message = "Hello device " + num;
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-                //Requires a new thread to avoid blocking the UI
-                new SendThread(datapath, message).start();
-                num++;
-            }
-        });
+//        btn_sendMessage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String message = "Hello device " + num;
+//                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+//                //Requires a new thread to avoid blocking the UI
+//                new SendThread(datapath, message).start();
+//                num++;
+//            }
+//        });
     }
 
     protected void onResume() {
@@ -85,7 +88,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
             String msg = "" + (int)event.values[0];
             currentHeartRate = (int)event.values[0];
-            //tv_heartRate.setText(msg);
+            tv_currHeartRate.setText(msg);
             // send the message to phone when sensor changed
         }
     }
@@ -95,10 +98,17 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
     }
 
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        return false;
+    }
+
 //    @Override
 //    public void onClick(View v) {
 //
 //    }
+
+
 
     @Override
     public void onMessageReceived(@NonNull MessageEvent messageEvent) {
